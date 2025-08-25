@@ -1,0 +1,5 @@
+.realtime-container { padding: 24px; }
+.realtime-actions { display: flex; gap: 8px; }
+.realtime-log { margin-top: 16px; background: #f7f7f7; padding: 12px; max-height: 240px; overflow: auto; }
+
+

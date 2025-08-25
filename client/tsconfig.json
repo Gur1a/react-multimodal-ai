@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "ESNext",
+    "jsx": "react-jsx",
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "typeRoots": ["./node_modules/@types", "./src/typings"],
+    "types": ["node", "react", "react-dom"],
+    "paths": {
+      "@/*": ["src/*"],
+      "@routers/*": ["src/routers/*"],
+      "@services/*": ["src/services/*"]
+    }
+  },
+  "include": ["src/**/*", "src/typings.d.ts"],
+  "exclude": ["node_modules"]
+}

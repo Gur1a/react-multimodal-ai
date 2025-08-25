@@ -1,0 +1,68 @@
+.chatContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.messageList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  margin-bottom: 20px;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+.messageItem {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  
+  &.isUser {
+    flex-direction: row-reverse;
+  }
+}
+
+.messageContent {
+  max-width: 70%;
+  padding: 12px 16px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: #000;
+
+  .isUser & {
+    margin: 0 20px 0 0;
+    background: #1890ff;
+    color: #fff;
+  }
+
+  :not(.isUser) & {
+    margin: 0 0 0 20px;
+  }
+}
+
+.inputContainer {
+  display: flex;
+  gap: 10px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.cursor {
+  display: inline-block;
+  width: 2px;
+  animation: blink 1s step-end infinite;
+  margin-left: 2px;
+  font-weight: bold;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+} 

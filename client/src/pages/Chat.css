@@ -1,0 +1,127 @@
+.chat-container {
+	padding: 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.chat-box {
+	border: 1px solid #e5e5e5;
+	border-radius: 8px;
+	padding: 12px;
+	height: 360px;
+	overflow: auto;
+	background: #fafafa;
+}
+
+.chat-message { margin-bottom: 12px; }
+.chat-role { font-weight: 600; }
+.chat-text {
+	white-space: pre-wrap;
+	word-break: break-word;
+	line-height: 1.6;
+	transition: all 0.1s ease-out;
+}
+
+/* AI消息的打字机效果 */
+.chat-message[data-role="assistant"] .chat-text {
+	position: relative;
+}
+
+/* 在消息正在输入时显示光标 */
+.chat-message.typing .chat-text::after {
+	content: '|';
+	position: absolute;
+	right: -8px;
+	top: 0;
+	animation: blink 1s infinite;
+	color: #666;
+	font-weight: normal;
+	line-height: inherit;
+}
+
+@keyframes blink {
+	0%, 50% { opacity: 1; }
+	51%, 100% { opacity: 0; }
+}
+
+/* 添加打字机效果 */
+/*.chat-text {*/
+/*	overflow: hidden;*/
+/*	border-right: 2px solid transparent;*/
+/*	animation: typing 0.2s steps(40, end);*/
+/*}*/
+
+/*@keyframes typing {*/
+/*	from { width: 0 }*/
+/*	to { width: 100% }*/
+/*}*/
+
+/* 光标样式 - 采用ChatSSE成功模式 */
+.cursor {
+	color: #666;
+	font-weight: normal;
+	animation: blink 1s infinite;
+	margin-left: 2px;
+}
+
+@keyframes blink {
+	0%, 50% { opacity: 1; }
+	51%, 100% { opacity: 0; }
+}
+
+.chat-images,
+.chat-preview-list {
+	display: flex;
+	gap: 15px;
+	flex-wrap: wrap;
+}
+
+.chat-preview-item {
+	position: relative;
+	width: 72px;
+	height: 72px;
+}
+
+.chat-image { 
+	width: 96px; 
+	height: 96px; 
+	object-fit: cover; 
+	border-radius: 6px; 
+	border: 1px solid #eee; 
+}
+
+.chat-preview-image { 
+	width: 72px; height: 72px; object-fit: cover; border-radius: 6px; border: 1px solid #eee; 
+}
+
+.chat-img-delete {
+	position: absolute;
+	top: -10px;
+	right: -10px;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	border: 1px solid #ddd;
+	background: #fff;
+	color: #333;
+	line-height: 18px;
+	text-align: center;
+	cursor: pointer;
+	font-size: 12px;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.chat-img-delete:hover { background: #f3f3f3; }
+
+.chat-input-area { display: flex; flex-direction: column; gap: 8px; }
+.chat-textarea { resize: vertical; padding: 8px; }
+.chat-actions { display: flex; align-items: center; gap: 8px; }
+.chat-upload-label { cursor: pointer; }
+.chat-upload-btn { padding: 6px 10px; border: 1px solid #ddd; border-radius: 6px; display: inline-block; transition: all 0.2s ease; }
+.chat-upload-btn.disabled { opacity: 0.6; cursor: not-allowed; }
+.chat-send-btn { padding: 6px 12px; transition: all 0.2s ease; }
+.chat-send-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.chat-textarea:disabled { opacity: 0.7; cursor: not-allowed; background-color: #f5f5f5; }
+
+
