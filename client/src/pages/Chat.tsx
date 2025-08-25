@@ -97,7 +97,7 @@ const Chat: React.FC = () => {
 					// 关键修复：只要不是最后一个token就延迟
 					if (hasMoreTokens) {
 						console.log(`⏱️  等待150ms后继续下一个token... (还剩${updateQueue.length}个)`);
-						await new Promise(resolve => setTimeout(resolve, 150));
+						await new Promise(resolve => setTimeout(resolve, 10));
 						console.log(`✅ 延迟完成，继续处理下一个token`);
 					} else {
 						console.log(`🏁 这是最后一个token，无需延迟`);

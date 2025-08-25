@@ -41,8 +41,17 @@ async function chat(req, res, next) {
 
         // 心跳机制防止连接超时
         const heartbeat = setInterval(() => {
-            res.write(': heartbeat\n\n');
+            if (!res.destroyed && !res.headersSent) {
+                res.write(': heartbeat\n\n');
+            }
         }, 30000);
+        
+        // 清理函数
+        const cleanup = () => {
+            if (heartbeat) {
+                clearInterval(heartbeat);
+            }
+        };
 
         // 调用腾讯混元API
         const apiPayload = {
@@ -51,15 +60,17 @@ async function chat(req, res, next) {
             Messages: [{ Role: 'user', Content: text }],
         };
 
+        console.log('Calling Hunyuan API...');
         const result = await client.ChatCompletions(apiPayload);
 
         if (typeof result?.on === 'function') {
             let answer = '';
-            let chunks = []; // 收集所有内容块
+            let tokenCount = 0;
             
-            // 首先收集所有数据
             result.on('message', (msg) => {
                 try {
+                    if (res.destroyed) return; // 检查响应是否已销毁
+                    
                     const s = typeof msg === 'string' ? msg : (msg?.data || '');
                     if (!s) return;
 
@@ -72,50 +83,29 @@ async function chat(req, res, next) {
                         
                         if (delta) {
                             answer += delta;
+                            tokenCount++;
+                            
+                            res.write(`data: ${JSON.stringify({
+                                delta: delta,
+                                id: data.Id,
+                                created: data.Created
+                            })}\n\n`);
+                            
+                            console.log(`Token ${tokenCount}: "${delta}"`);
                         }
                         
                         if (finishReason === 'stop') {
-                            // 数据收集完成，开始分块发送
-                            console.log('数据收集完成，开始模拟打字机发送:', answer);
+                            res.write(`data: ${JSON.stringify({
+                                done: true,
+                                id: data.Id,
+                                created: data.Created,
+                                usage: data.Usage,
+                                tokenCount: tokenCount,
+                                totalLength: answer.length
+                            })}\n\n`);
                             
-                            // 按照ChatSSE模式分块发送
-                            const characters = answer.toString();
-                            let index = 0;
-                            
-                            const interval = setInterval(() => {
-                                if (index < characters.length) {
-                                    // 生成1-5个字符的随机块
-                                    const chunkSize = Math.floor(Math.random() * 5) + 1;
-                                    const chunk = characters.slice(index, index + chunkSize);
-                                    
-                                    res.write(`data: ${JSON.stringify({
-                                        delta: chunk,
-                                        id: data.Id,
-                                        created: data.Created
-                                    })}\n\n`);
-                                    
-                                    console.log('发送块:', chunk);
-                                    index += chunkSize;
-                                } else {
-                                    // 发送完成
-                                    clearInterval(interval);
-                                    res.write(`data: ${JSON.stringify({
-                                        done: true,
-                                        id: data.Id,
-                                        created: data.Created,
-                                        usage: data.Usage
-                                    })}\n\n`);
-                                    
-                                    clearInterval(heartbeat);
-                                    res.end();
-                                }
-                            }, 100); // 100ms间隔
-                            
-                            // 监听客户端断开连接
-                            req.on('close', () => {
-                                clearInterval(interval);
-                                clearInterval(heartbeat);
-                            });
+                            cleanup();
+                            res.end();
                         }
                     });
                 } catch (err) {
